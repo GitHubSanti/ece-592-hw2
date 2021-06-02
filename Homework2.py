@@ -1,4 +1,3 @@
-# def gen_code_file(word):
 def gen_code_file(secretword: str, freq:int = 0, maxlength:int = 100000):
     """
     That generate a file containing maxlength random english letters (a to z and A to Z) and places the secretword in the file freq number of times at random locations 
@@ -9,6 +8,7 @@ def gen_code_file(secretword: str, freq:int = 0, maxlength:int = 100000):
     import random
     from datetime import date
 
+    # checks and error handling 
     try:
         freq = int(freq)
         maxlength = int(maxlength)
@@ -28,10 +28,11 @@ def gen_code_file(secretword: str, freq:int = 0, maxlength:int = 100000):
         print("secret word cannot be as large or larger than max file length")
         return -1
 
+    # file to write to
     file_name = 'random_letters_new.txt'
 
+    # if frequency of word is not 0
     if freq != 0:
-
         # to avoid cut off words
         boundaries = [i for i in range(maxlength) if i%200 == 0 and i != 0]
         restricted = []
@@ -62,11 +63,11 @@ def gen_code_file(secretword: str, freq:int = 0, maxlength:int = 100000):
         secret_word_list = [] 
         for i in range(len(random_locations)):
             if i == 0:
-                secret_word_list.append(secretword + " " + str(date.today()))
+                secret_word_list.append(secretword + str(date.today()))
             else:
                 secret_word_list.append(secretword)
 
-        col = 0 
+        col = 0
         with open(file_name,'w') as f:
             while f.tell() < maxlength:
                 if f.tell() + 1 in random_locations:
@@ -76,21 +77,54 @@ def gen_code_file(secretword: str, freq:int = 0, maxlength:int = 100000):
                     col += len(secret_word_list[i])
 
                 else:
-                    if col < 200:
+                    if col < 199:
                         f.write(random.choice(string.ascii_letters))
                         col += 1
                     else:
                         f.write("\n")
                         col = 0
+
+    # if frequency of word is zero, just fill in txt file with random ascii characters
     else:
         col = 0 
         with open(file_name,'w') as f:
             while f.tell() < maxlength:
-                if col < 200:
+                if col < 199:
                     f.write(random.choice(string.ascii_letters))
                     col += 1
                 else:
                     f.write("\n")
                     col = 0
 
-gen_code_file("star",3)
+def findWord (filename:str, word:str):
+    """
+    Returns a list of integers with all the locations the word appears.
+    From earliest to latest positions.
+    Returns an empty list if the word is not in the file then.
+    If the input file doesn’t exist, print a warning and return -1. 
+    """
+    try:
+        with open(filename) as f:
+            text = f.read()
+    except FileNotFoundError:
+        print("File was not found.")
+        return -1
+
+    occurances = list()
+    i = 0
+    i = text.find(word,i)+1
+    if i != 0:
+        occurances.append(i)
+        while i != 0:
+            i = text.find(word,i)+1
+            if i == 0:
+                break
+            occurances.append(i)
+    print(occurances)
+    return occurances
+
+
+# used for testing functions above
+# gen_code_file("star",3)
+gen_code_file("star", 4,maxlength=1000)
+findWord("random_letters_new.txt","star")
