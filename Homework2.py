@@ -96,7 +96,7 @@ def gen_code_file(secretword: str, freq:int = 0, maxlength:int = 100000):
                     f.write("\n")
                     col = 0
 
-def findWord (filename:str, word:str):
+def findWord(filename:str, word:str):
     """
     Returns a list of integers with all the locations the word appears.
     From earliest to latest positions.
@@ -122,9 +122,3 @@ def findWord (filename:str, word:str):
             occurances.append(i)
     print(occurances)
     return occurances
-
-
-# used for testing functions above
-# gen_code_file("star",3)
-gen_code_file("star", 4,maxlength=1000)
-findWord("random_letters_new.txt","star")
