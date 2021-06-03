@@ -175,3 +175,19 @@ def dataSorter(filename:str):
                 except IndexError:
                     csv_row[key] = None
             writer.writerow(csv_row)
+
+def dataRecorder(filename: str, record:dict):
+    """
+    Creates a csv file with given filename if the file doesn’t exist and writes the record to the file
+    If the file exists then it appends the given record to the file at the end and saves and closes the file
+    Datatype for the record is a dictionary with following format {“Name”: “<name>”, “Weight”: <weight in lbs>, “Height”:<Height in feet>}
+    """
+    import os
+    import csv
+    header_row = os.path.isfile(filename)
+        
+    with open(filename, 'a', newline='') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=list(record))
+        if header_row == False:
+            writer.writeheader()
+        writer.writerow(record)
