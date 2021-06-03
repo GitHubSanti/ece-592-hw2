@@ -122,3 +122,59 @@ def findWord(filename:str, word:str):
             occurances.append(i)
     print(occurances)
     return occurances
+
+def dataSorter(filename:str):
+    """
+    Used to sort data acquired from csv file broken up into Category and Value columns. 
+    Sorted data is placed in sorteddata.csv file.
+    For each column, unique values are recorded in each row. 
+    The columns in the output csv are in alphabetical order (left to right). 
+    the entries for each category also in alphabetical order (top to bottom).
+    Numbers sorted as strings.
+    """
+    import csv
+
+    # dictionary to store unique values for each category. categories are the keys for dictionary
+    dict = {}
+
+    # read specified csv file
+    with open(filename,newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        category_list = []
+        category_value_list = []
+        # identify different categories and values for those categories
+        for row in reader:
+            category_list.append(row["Category"])
+            category_value_list.append((row["Category"],row["Value"]))
+        # condense down to unique and remove duplicates
+        category_set = set(category_list)
+        category_list = list(category_set)
+        category_list.sort()
+        category_value_set = set(category_value_list)
+        category_value_list = list(category_value_set)
+        category_value_list.sort()
+        for category in category_list:
+            dict[category] = []
+        for tuple in category_value_list:
+            dict[tuple[0]].append(tuple[1])
+    
+    # determine which category has the most unique values from 
+    d_keys = list(dict.keys())
+    most_vals = max([len(dict[k]) for k in d_keys])
+
+    # write sorted data into sorteddata.csv
+    with open('sorteddata.csv', 'w', newline='') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=list(dict))
+        writer.writeheader()
+        csv_row = {}
+        # update csv_row dictionary for every row, insert None if no value is available 
+        for index in range(most_vals):
+            for key in d_keys:
+                try:
+                    csv_row[key] = dict[key][index]
+                except IndexError:
+                    csv_row[key] = None
+            writer.writerow(csv_row)
+            
+
+dataSorter("answer.csv")
