@@ -175,6 +175,3 @@ def dataSorter(filename:str):
                 except IndexError:
                     csv_row[key] = None
             writer.writerow(csv_row)
-            
-
-dataSorter("answer.csv")
